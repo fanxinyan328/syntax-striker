@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>syntax-striker</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      #app {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+      }
+      canvas {
+        display: block;
+      }
+      #command-status {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1002;
+        font-size: 20px;
+        font-weight: bold;
+        color: #00f2ff;
+        text-shadow: 0 0 15px currentColor, 0 0 30px currentColor;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        font-family: 'Courier New', monospace;
+        letter-spacing: 2px;
+      }
+      #command-status.show {
+        opacity: 1;
+      }
+      #vibe-input {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1001;
+        padding: 14px 28px;
+        font-size: 16px;
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid #00f2ff;
+        border-radius: 8px;
+        color: #00f2ff;
+        outline: none;
+        min-width: 320px;
+        box-shadow: 0 0 25px rgba(0, 242, 255, 0.4), inset 0 0 10px rgba(0, 242, 255, 0.1);
+        transition: all 0.3s ease;
+        font-family: 'Courier New', monospace;
+      }
+      #vibe-input:focus {
+        border-color: #ff4400;
+        box-shadow: 0 0 35px rgba(255, 68, 0, 0.6), inset 0 0 10px rgba(255, 68, 0, 0.1);
+      }
+      #score-display {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1000;
+        font-size: 18px;
+        font-weight: bold;
+        color: #fff;
+        font-family: 'Courier New', monospace;
+        text-shadow: 0 0 10px currentColor;
+      }
+      #health-bar {
+        position: fixed;
+        top: 50px;
+        left: 20px;
+        z-index: 1000;
+        width: 200px;
+        height: 20px;
+        background: rgba(0, 0, 0, 0.5);
+        border: 2px solid #00f2ff;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      #health-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #00ff00, #ffff00, #ff0000);
+        width: 100%;
+        transition: width 0.3s ease;
+      }
+      #command-panel {
+        position: fixed;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 1000;
+        background: rgba(0, 0, 0, 0.85);
+        border: 1px solid #00f2ff;
+        border-radius: 8px;
+        padding: 10px;
+        box-shadow: 0 0 15px rgba(0, 242, 255, 0.2), inset 0 0 10px rgba(0, 242, 255, 0.1);
+        font-family: 'Courier New', monospace;
+        min-width: 140px;
+        opacity: 0.8;
+      }
+      #command-panel:hover {
+        opacity: 1;
+      }
+      .panel-title {
+        color: #00f2ff;
+        font-size: 11px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 8px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid rgba(0, 242, 255, 0.3);
+        text-shadow: 0 0 8px #00f2ff;
+        letter-spacing: 2px;
+      }
+      .command-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 0;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .command-item:last-child {
+        border-bottom: none;
+      }
+      .cmd-name {
+        color: #ff4400;
+        font-weight: bold;
+        text-shadow: 0 0 5px #ff4400;
+        min-width: 45px;
+        font-size: 12px;
+      }
+      .cmd-desc {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 9px;
+        text-align: right;
+      }
+      .section-title {
+        color: #00f2ff;
+        font-size: 9px;
+        font-weight: bold;
+        margin-top: 8px;
+        margin-bottom: 4px;
+        padding-bottom: 3px;
+        border-bottom: 1px solid rgba(0, 242, 255, 0.2);
+        letter-spacing: 1px;
+      }
+      .section-title:first-of-type {
+        margin-top: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <div id="command-status"></div>
+    <div id="score-display">SCORE: 0</div>
+    <div id="health-bar"><div id="health-fill"></div></div>
+    <div id="command-panel">
+      <div class="panel-title">SYNTAX STRIKER</div>
+      <div class="section-title">PROGRESSION</div>
+      <div class="command-item"><span class="cmd-name">Start</span> <span class="cmd-desc">Fire Rate Lv1</span></div>
+      <div class="command-item"><span class="cmd-name">Boss</span> <span class="cmd-desc">Defeat → Level up</span></div>
+      <div class="section-title">COMMANDS</div>
+      <div class="command-item"><span class="cmd-name">1</span> <span class="cmd-desc">Fire (boss DOT)</span></div>
+      <div class="command-item"><span class="cmd-name">2</span> <span class="cmd-desc">Ice (slow dmg)</span></div>
+      <div class="command-item"><span class="cmd-name">3</span> <span class="cmd-desc">Dual bullets</span></div>
+      <div class="command-item"><span class="cmd-name">4</span> <span class="cmd-desc">Laser beam (5s)</span></div>
+      <div class="command-item"><span class="cmd-name">5</span> <span class="cmd-desc">Circle bullets</span></div>
+      <div class="command-item"><span class="cmd-name">6</span> <span class="cmd-desc">Pause/Resume</span></div>
+    </div>
+    <input type="text" id="vibe-input" placeholder="Type 1-6 and press Enter..." autofocus />
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
