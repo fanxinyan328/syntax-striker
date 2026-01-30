@@ -1,7 +1,17 @@
 import './style.css'
 
+// Set dark space background immediately
+document.body.style.backgroundColor = '#050505';
+
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
+
+// Ensure canvas is properly positioned behind UI elements
+canvas.style.position = 'fixed';
+canvas.style.top = '0';
+canvas.style.left = '0';
+canvas.style.zIndex = '1';
+
 document.querySelector('#app').appendChild(canvas);
 
 // 初始化画布大小
