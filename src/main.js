@@ -1,18 +1,20 @@
 import './style.css'
 
-// Set dark space background immediately
-document.body.style.backgroundColor = '#050505';
+// Wait for DOM to be fully loaded before initializing
+function initGame() {
+  // Set dark space background immediately
+  document.body.style.backgroundColor = '#050505';
 
-const canvas = document.createElement('canvas');
-const ctx = canvas.getContext('2d');
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
 
-// Ensure canvas is properly positioned behind UI elements
-canvas.style.position = 'fixed';
-canvas.style.top = '0';
-canvas.style.left = '0';
-canvas.style.zIndex = '1';
+  // Ensure canvas is properly positioned behind UI elements
+  canvas.style.position = 'fixed';
+  canvas.style.top = '0';
+  canvas.style.left = '0';
+  canvas.style.zIndex = '1';
 
-document.querySelector('#app').appendChild(canvas);
+  document.querySelector('#app').appendChild(canvas);
 
 // 初始化画布大小
 function resize() {
@@ -1214,3 +1216,11 @@ function gameLoop() {
 // 初始化显示
 initDisplays();
 gameLoop();
+}
+
+// Start the game when DOM is fully loaded
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initGame);
+} else {
+  initGame();
+}
