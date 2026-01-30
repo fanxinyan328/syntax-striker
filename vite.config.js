@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/syntax-striker/',
+  base: './',
   server: {
     port: 5173
   },
